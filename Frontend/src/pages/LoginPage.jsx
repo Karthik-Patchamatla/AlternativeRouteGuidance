@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import logo from '../assets/trainlogo.png';
 import axios from 'axios';
 
@@ -26,6 +26,11 @@ export default function Login() {
         try {
             const response = await axios.post('http://localhost:8080/api/login', { email, password });
             console.log(response.data.message);
+            
+            // Store email and username in localStorage
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('username', response.data.username);
+
             navigate('/home'); // Navigate to the homepage on successful login
         } catch (error) {
             setErrorMessage(error.response?.data?.error || 'An error occurred during login');
@@ -35,9 +40,12 @@ export default function Login() {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="flex flex-col bg-white p-8 rounded-lg shadow-lg w-96">
+                {/* Logo */}
                 <div className="flex justify-center mb-6">
                     <img src={logo} alt="Logo" className="h-16" />
                 </div>
+
+                {/* Text message */}
                 <div className="text-center mb-4">
                     <p className="text-lg font-semibold text-gray-700">Please enter your information</p>
                 </div>
@@ -49,6 +57,7 @@ export default function Login() {
                     </div>
                 )}
 
+                {/* Form */}
                 <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
                     <input
                         type="email"
@@ -66,27 +75,28 @@ export default function Login() {
                         onChange={handleChange}
                         className="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+                    
+                    {/* Forgot Password */}
+                    <div className="flex justify-end mt-2">
+                        <p className="text-sm text-blue-600 hover:underline cursor-pointer">Forgot Password?</p>
+                    </div>
+
+                    {/* Buttons side by side */}
+                    <div className="flex mt-6 space-x-4">
+                        <button 
+                            className="w-full bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700"
+                            onClick={() => navigate('/register')}
+                        >
+                            Register
+                        </button>
+                        <button 
+                            type="submit"
+                            className="w-full bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700"
+                        >
+                            Login
+                        </button>
+                    </div>
                 </form>
-
-                <div className="flex justify-end mt-2">
-                    <p className="text-sm text-blue-600 hover:underline cursor-pointer">Forgot Password?</p>
-                </div>
-
-                <div className="flex mt-6 space-x-4">
-                    <button 
-                        className="w-full bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700"
-                        onClick={() => navigate('/register')}
-                    >
-                        Register
-                    </button>
-                    <button 
-                        type="submit"
-                        className="w-full bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700"
-                        onClick={handleSubmit}
-                    >
-                        Login
-                    </button>
-                </div>
             </div>
         </div>
     );

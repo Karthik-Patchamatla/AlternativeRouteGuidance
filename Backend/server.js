@@ -44,7 +44,7 @@ const registerSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    passowrd: {
+    password: { // Fixed the typo in "password"
         type: String,
         required: true,
     },
@@ -71,7 +71,7 @@ app.post('/api/register', async (req, res) => {
             username,
             email,
             mobilenumber: mobileNumber,
-            passowrd: password
+            password // Use the corrected field name
         });
 
         // Save to database
@@ -82,6 +82,7 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
+// API route to handle login
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -94,12 +95,32 @@ app.post('/api/login', async (req, res) => {
         }
 
         // Check if password matches
-        if (user.passowrd !== password) {
+        if (user.password !== password) {
             return res.status(400).json({ error: "Invalid email or password" });
         }
 
-        res.status(200).json({ message: "Login successful" });
+        // Return username along with success message
+        res.status(200).json({ message: "Login successful", username: user.username });
     } catch (error) {
         res.status(500).json({ error: "An error occurred during login" });
+    }
+});
+
+// API route to get user details by email
+app.post('/api/getUserDetails', async (req, res) => {
+    try {
+        const { email } = req.body;
+        
+        // Fetch user details by email
+        const user = await Register.findOne({ email: email }, 'username');
+        
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Return the username to the client
+        res.status(200).json({ username: user.username });
+    } catch (error) {
+        res.status(500).json({ error: "An error occurred while fetching user details" });
     }
 });
