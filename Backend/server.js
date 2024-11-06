@@ -106,21 +106,38 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// API route to get user details by email
-app.post('/api/getUserDetails', async (req, res) => {
+// API route to get user profile details by email using a GET request
+app.get('/api/user/profile', async (req, res) => {
     try {
-        const { email } = req.body;
-        
+        const email = req.query.email; // Get email from query parameter
+        console.log("Email received:", email); // Log the received email
+
         // Fetch user details by email
-        const user = await Register.findOne({ email: email }, 'username');
-        
+        const user = await Register.findOne({ email: email });
+        console.log("User found:", user); // Log the user object
+
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
 
-        // Return the username to the client
-        res.status(200).json({ username: user.username });
+        // Prepare the user data to send back
+        const userData = {
+            firstname: user.firstname,
+            lastname: user.lastname,
+            username: user.username,
+            email: user.email,
+            mobilenumber: user.mobilenumber,
+            address: user.Address,
+            birthday: user.Birthday
+        };
+
+        // Log the data being sent to the client
+        console.log("Sending user data:", userData);
+
+        // Return the user details to the client
+        res.status(200).json(userData);
     } catch (error) {
-        res.status(500).json({ error: "An error occurred while fetching user details" });
+        console.error("Error fetching user details:", error); // Log any errors
+        res.status(500).json({ error: "An error occurred while fetching profile details" });
     }
 });

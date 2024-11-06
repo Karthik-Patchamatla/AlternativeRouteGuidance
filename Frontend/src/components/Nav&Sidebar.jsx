@@ -92,7 +92,7 @@ export default function Layout() {
                     {isProfileOpen && (
                         <div className="pl-4">
                             <div className="my-2">
-                                <Link to="/profile" className="">
+                                <Link to="/home/profile" className="">
                                     View Profile
                                 </Link>
                             </div>
@@ -163,9 +163,6 @@ export default function Layout() {
                     </Link>
                 </div>
             </div>
-
-            {/* Main Content - Positioned below the sidebar */}
-            
         </div>
     );
 }
