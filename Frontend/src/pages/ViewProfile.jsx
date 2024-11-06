@@ -36,39 +36,39 @@ export default function ViewProfile() {
             {/* Sidebar */}
             <NavSidebar />
 
-            <div className="p-4 w-full ml-72 pt-20">
+            <div className="w-full ml-72 pt-20">
                 {profileData ? (
                     <div>
                         <h1 className="text-2xl font-bold mb-4">About Me</h1>
-                        <table className="w-[500px] ">
+                        <table className="w-[900px] ">
                             <tbody>
                                 <tr className="border-b">
                                     <td className="px-4 py-2 font-medium">First Name</td>
-                                    <td className="px-4 py-2 text-center">{profileData.firstname}</td>
+                                    <td className="px-4 py-2 ">{profileData.firstname}</td>
                                 </tr>
                                 <tr className="border-b">
                                     <td className="px-4 py-2 font-medium">Last Name</td>
-                                    <td className="px-4 py-2 text-center">{profileData.lastname}</td>
+                                    <td className="px-4 py-2 ">{profileData.lastname}</td>
                                 </tr>
                                 <tr className="border-b">
                                     <td className="px-4 py-2 font-medium">Username</td>
-                                    <td className="px-4 py-2 text-center">{profileData.username}</td>
+                                    <td className="px-4 py-2 ">{profileData.username}</td>
                                 </tr>
                                 <tr className="border-b">
                                     <td className="px-4 py-2 font-medium">Email</td>
-                                    <td className="px-4 py-2 text-center">{profileData.email}</td>
+                                    <td className="px-4 py-2 ">{profileData.email}</td>
                                 </tr>
                                 <tr className="border-b">
                                     <td className="px-4 py-2 font-medium">Phone</td>
-                                    <td className="px-4 py-2 text-center">{profileData.mobilenumber}</td>
+                                    <td className="px-4 py-2">{profileData.mobilenumber}</td>
                                 </tr>
                                 <tr className="border-b">
                                     <td className="px-4 py-2 font-medium">Address</td>
-                                    <td className="px-4 py-2 text-center">{profileData.address}</td>
+                                    <td className="px-4 py-2">{profileData.address}</td>
                                 </tr>
                                 <tr className="border-b">
                                     <td className="px-4 py-2 font-medium">Birthday</td>
-                                    <td className="px-4 py-2 text-right">{profileData.birthday}</td>
+                                    <td className="px-4 py-2">{profileData.birthday}</td>
                                 </tr>
                             </tbody>
                         </table>

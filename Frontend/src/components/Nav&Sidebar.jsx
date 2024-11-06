@@ -73,7 +73,7 @@ export default function Layout() {
                 {/* Dashboard Section */}
                 <div className="mb-6 space-x-2">
                     <i className="fa-brands fa-windows"></i>
-                    <Link to="/dashboard" className="text-base mb-2 w-full">
+                    <Link to="/home" className="text-base mb-2 w-full">
                         Dashboard
                     </Link>
                 </div>
@@ -97,12 +97,12 @@ export default function Layout() {
                                 </Link>
                             </div>
                             <div className="mb-2">
-                                <Link to="/profile/update" className="">
+                                <Link to="/home/updateprofile" className="">
                                     Update Profile
                                 </Link>
                             </div>
                             <div className="mb-2">
-                                <Link to="/profile/change-password" className="">
+                                <Link to="/home/change-password" className="">
                                     Change Password
                                 </Link>
                             </div>

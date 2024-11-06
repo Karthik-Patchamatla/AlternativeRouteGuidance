@@ -4,6 +4,8 @@ import Login from './pages/LoginPage.jsx';
 import Register from './pages/RegisterPage.jsx';
 import HomePage from './pages/Homepage.jsx';
 import ViewProfile from './pages/ViewProfile.jsx';
+import UpdateProfile from './pages/UpdateProfile.jsx';
+import ChangePassword from './pages/ChangePassword.jsx';
 
 export default function App() {
     return (
@@ -13,6 +15,8 @@ export default function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/home/profile" element={<ViewProfile />} />
+                <Route path="/home/updateprofile" element={<UpdateProfile />} />
+                <Route path="/home/change-password" element={<ChangePassword />} />
             </Routes>
         </Router>
     );

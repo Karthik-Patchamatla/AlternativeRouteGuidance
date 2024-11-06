@@ -141,3 +141,64 @@ app.get('/api/user/profile', async (req, res) => {
         res.status(500).json({ error: "An error occurred while fetching profile details" });
     }
 });
+
+// API route to handle updating user profile
+app.put('/api/user/update', async (req, res) => {
+    try {
+        const email = req.query.email; // Get email from query parameter
+        const { firstname, lastname, username, mobilenumber, address, birthday } = req.body;
+
+        // Find the user by email
+        const user = await Register.findOne({ email: email });
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Update user details
+        user.firstname = firstname || user.firstname;
+        user.lastname = lastname || user.lastname;
+        user.username = username || user.username;
+        user.mobilenumber = mobilenumber || user.mobilenumber;
+        user.Address = address || user.Address;
+        user.Birthday = birthday || user.Birthday;
+
+        // Save updated user
+        await user.save();
+
+        // Return success message
+        res.status(200).json({ message: "Profile updated successfully" });
+    } catch (error) {
+        console.error("Error updating profile:", error); // Log any errors
+        res.status(500).json({ error: "An error occurred while updating profile" });
+    }
+});
+
+// API route to handle password change
+app.post('/api/user/change-password', async (req, res) => {
+    try {
+        const { email, oldPassword, newPassword } = req.body;
+
+        // Find the user by email
+        const user = await Register.findOne({ email: email });
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Check if old password matches
+        if (user.password !== oldPassword) {
+            return res.status(400).json({ error: "Old password is incorrect" });
+        }
+
+        // Update password
+        user.password = newPassword;
+        await user.save();
+
+        res.status(200).json({ message: "Password updated successfully" });
+    } catch (error) {
+        console.error("Error changing password:", error); // Log any errors
+        res.status(500).json({ error: "An error occurred while changing the password" });
+    }
+});
+
