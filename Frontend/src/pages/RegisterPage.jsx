@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../assets/trainlogo.png';
+import logo from '../assets/argimage.png';
 import axios from 'axios';
 import 'animate.css'; // Importing Animate.css
 
@@ -51,7 +51,7 @@ export default function Register() {
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="flex flex-col bg-white p-8 rounded-lg shadow-lg w-96">
                 <div className="flex justify-center mb-6">
-                    <img src={logo} alt="Logo" className="h-16" />
+                    <img src={logo} alt="Logo" className="h-24" />
                 </div>
                 <div className="text-center mb-4">
                     <p className="text-lg font-semibold text-gray-700">Create your account</p>

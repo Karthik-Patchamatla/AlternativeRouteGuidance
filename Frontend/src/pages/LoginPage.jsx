@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import logo from '../assets/trainlogo.png';
+import logo from '../assets/argimage.png';
 import axios from 'axios';
 
 export default function Login() {
@@ -42,7 +42,7 @@ export default function Login() {
             <div className="flex flex-col bg-white p-8 rounded-lg shadow-lg w-96">
                 {/* Logo */}
                 <div className="flex justify-center mb-6">
-                    <img src={logo} alt="Logo" className="h-16" />
+                    <img src={logo} alt="Logo" className="h-24" />
                 </div>
 
                 {/* Text message */}

@@ -202,3 +202,51 @@ app.post('/api/user/change-password', async (req, res) => {
     }
 });
 
+const trainSchema = new mongoose.Schema({
+    trainnumber: { type: String, required: true },
+    trainname: { type: String, required: true },
+    from: { type: String, required: true },
+    to: { type: String, required: true },
+    duration: { type: String, required: true },
+    arrival: { type: String, required: true },
+    departure: { type: String, required: true },
+    sleeper: { type: Number, required: true },
+    firstclass: { type: Number, required: true },
+    secondclass: { type: Number, required: true },
+    thirdclass: { type: Number, required: true }
+  });
+  
+  // Define Train Model
+  const Train = mongoose.model('Train', trainSchema);
+  
+  // API route to get trains
+  app.get('/api/getTrains', async (req, res) => {
+    try {
+      const trains = await Train.find(); // Fetch all trains
+      res.json(trains); // Return train data
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch train details' });
+    }
+  });
+
+// API route to get trains by 'from' and 'to' locations
+app.get('/api/getTrainsByRoute', async (req, res) => {
+    try {
+        const { from, to } = req.query;
+
+        // Find trains that match the 'from' and 'to' locations
+        const trains = await Train.find({ from: from, to: to });
+
+        if (trains.length === 0) {
+            return res.status(404).json({ message: "No trains found for this route" });
+        }
+
+        res.status(200).json(trains);
+    } catch (error) {
+        console.error("Error fetching trains by route:", error);
+        res.status(500).json({ error: "An error occurred while fetching train details" });
+    }
+});
+
+
+  

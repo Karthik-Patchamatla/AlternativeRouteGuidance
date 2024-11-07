@@ -64,7 +64,7 @@ export default function Layout() {
             </div>
 
             {/* Sidebar - Positioned below the navbar */}
-            <div className="w-64 fixed top-0 bg-[#f3f3f3] min-h-screen p-5 mt-14">
+            <div className="w-64 fixed top-0 bg-[#f3f3f3] min-h-screen p-5 mt-14 shadow-lg">
                 {/* Title Section */}
                 <div className="text-sm font-bold mb-4 ">
                     <h1>Menu</h1>
@@ -120,7 +120,7 @@ export default function Layout() {
                     {isTrainsOpen && (
                         <div className="pl-4">
                             <div className="my-2">
-                                <Link to="/trains/search" className="">
+                                <Link to="/home/search" className="">
                                     Search Trains
                                 </Link>
                             </div>
