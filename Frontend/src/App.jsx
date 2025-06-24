@@ -1,10 +1,17 @@
-function App() {
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './pages/LoginPage.jsx';
+import Register from './pages/RegisterPage.jsx';
+import HomePage from './pages/Homepage.jsx';
 
-  return (
-    <div>
-      <p className='text-2xl text-red-500'>Text Nigga</p>
-    </div>
-  )
+export default function App() {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/home" element={<HomePage />} />
+            </Routes>
+        </Router>
+    );
 }
-
-export default App
