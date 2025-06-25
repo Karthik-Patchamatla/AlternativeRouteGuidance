@@ -24,6 +24,10 @@ app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
 
+app.get("/", (req, res) => {
+  res.send("Backend is working");
+});
+
 // Mongoose schema and model
 const registerSchema = new mongoose.Schema({
     firstname: { type: String, required: true },
