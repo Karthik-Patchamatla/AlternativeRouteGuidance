@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { replace, useNavigate } from 'react-router-dom';
 import logo from '../assets/argimage.png';
 import axios from 'axios';
+import { BASE_URL } from '../config';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8080/api/login', { email, password });
+            const response = await axios.post(`${BASE_URL}/api/login`, { email, password });
             console.log(response.data.message);
 
             navigate('/home', { replace: true });

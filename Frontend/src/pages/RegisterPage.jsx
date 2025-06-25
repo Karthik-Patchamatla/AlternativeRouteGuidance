@@ -5,6 +5,7 @@ import "animate.css";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "../redux/slices/AuthSlice.js";
+import { BASE_URL } from "../config.js";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ export default function Register() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/register",
+        `${BASE_URL}/api/register`,
         formData
       );
       console.log(response.data.message);
