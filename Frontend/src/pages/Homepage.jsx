@@ -1,7 +1,11 @@
-import React from 'react'
+// import HomepageContent from "../components/HomepageContent.jsx";
+import NavSidebar from "../components/NavSidebar.jsx";
 
-export default function Homepage() {
-  return (
-    <div>Homepage</div>
-  )
+export default function Home() {
+    return (
+        <div className="bg-white">
+            <NavSidebar />
+            {/* <HomepageContent/> */}
+        </div>
+    );
 }
