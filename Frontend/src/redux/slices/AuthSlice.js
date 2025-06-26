@@ -8,6 +8,7 @@ const initialState = {
   mobileNumber: '',
   password: '',
   address: '',
+  birthday: '',
 };
 
 const authSlice = createSlice({

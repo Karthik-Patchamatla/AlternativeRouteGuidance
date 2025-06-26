@@ -8,6 +8,8 @@ import store from "./redux/store/Store.js";
 import ViewProfile from "./pages/ViewProfile.jsx";
 import UpdateProfile from "./pages/UpdateProfile.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
+import SearchTrains from "./pages/SearchTrains.jsx";
+import SearchResults from "./pages/SearchResults.jsx";
 
 export default function App() {
   return (
@@ -20,6 +22,8 @@ export default function App() {
           <Route path="/home/profile/viewprofile" element={<ViewProfile />} />
           <Route path="/home/profile/updateprofile" element={<UpdateProfile />} />
           <Route path="/home/profile/changepassword" element={<ChangePassword />} />
+          <Route path="/home/trains/searchtrains" element={<SearchTrains />} />
+          <Route path="/home/trains/searchtrains/searchresults" element={<SearchResults />} />
         </Routes>
       </Router>
     </Provider>

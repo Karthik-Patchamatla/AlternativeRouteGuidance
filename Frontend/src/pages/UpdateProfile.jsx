@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
 import NavSidebar from '../components/NavSidebar';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 export default function UpdateProfile() {
+  const user = useSelector((state) => state.auth);
   const [profileData, setProfileData] = useState({
     firstname: '',
     lastname: '',
@@ -9,8 +11,22 @@ export default function UpdateProfile() {
     email: '',
     mobilenumber: '',
     birthday: '',
-    address: ''
+    address: '',
   });
+
+  useEffect(() => {
+    if (user) {
+      setProfileData({
+        firstname: user.firstName || '',
+        lastname: user.lastName || '',
+        username: user.username || '',
+        email: user.email || '',
+        mobilenumber: user.mobileNumber || '',
+        birthday: user.birthday || '',
+        address: user.address || '',
+      });
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,7 +36,9 @@ export default function UpdateProfile() {
     }));
   };
 
-  const handleSubmit = (e) => {};
+  const handleSubmit = async (e) => {
+    
+  };
 
   return (
     <div className="flex">
@@ -118,7 +136,7 @@ export default function UpdateProfile() {
                 value={profileData.birthday}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                // required
               />
             </div>
 
