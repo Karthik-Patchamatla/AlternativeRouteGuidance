@@ -10,6 +10,7 @@ import UpdateProfile from "./pages/UpdateProfile.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
 import SearchTrains from "./pages/SearchTrains.jsx";
 import SearchResults from "./pages/SearchResults.jsx";
+import ConfirmTrain from "./pages/ConfirmTrain.jsx";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/home/profile/changepassword" element={<ChangePassword />} />
           <Route path="/home/trains/searchtrains" element={<SearchTrains />} />
           <Route path="/home/trains/searchtrains/searchresults" element={<SearchResults />} />
+          <Route path="/home/trains/searchtrains/searchresults/confirmtrain" element={<ConfirmTrain />} />
         </Routes>
       </Router>
     </Provider>

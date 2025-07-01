@@ -7,22 +7,39 @@ import { useDispatch } from "react-redux";
 import { setTrainDetails } from "../redux/slices/FromToSlice.js";
 
 export default function SearchTrains() {
-  const stationOptions = [
-    "Jodhpur Junction",
-    "Jammu Tawi",
-    "New Delhi",
-    "Amritsar",
-    "Secunderabad",
-    "Kakinada Port",
-    "Pune Junction",
-    "Bangalore City Junction",
-    "Mumbai Central",
-    "Lucknow",
-    "Kolkata Howrah Junction",
-    "Ahmedabad Junction",
-    "Uttarkathani",
-    "Jaipur Junction",
-  ];
+const stationOptions = [
+  "Ahmedabad Junction (ADI)",
+  "Ambala Cantt (UMB)",
+  "Amritsar Junction (ASR)",
+  "Anand Vihar Terminal (ANVT)",
+  "Bengaluru City Junction (SBC)",
+  "Bhopal Junction (BPL)",
+  "Bhubaneswar (BBS)",
+  "Chandigarh (CDG)",
+  "Chennai Central (MAS)",
+  "Chhatrapati Shivaji Maharaj Terminus (CSMT)",
+  "Danapur (DNR)",
+  "Guwahati (GHY)",
+  "H Nizamuddin (NZM)",
+  "Hatia (HTE)",
+  "Howrah Junction (HWH)",
+  "Jaipur Junction (JP)",
+  "Jammu Tawi (JAT)",
+  "Jodhpur Junction (JU)",
+  "Kacheguda (KCG)",
+  "Kanpur Central (CNB)",
+  "Lokmanya Tilak Terminus (LTT)",
+  "Madgaon (MAO)",
+  "New Delhi (NDLS)",
+  "Patna Junction (PNBE)",
+  "Puri (PURI)",
+  "Raipur Junction (R)",
+  "Rajendra Nagar Terminal (RJPB)",
+  "Ranchi Junction (RNC)",
+  "Secunderabad Junction (SC)",
+  "Thiruvananthapuram Central (TVC)",
+  "Vijayawada Junction (BZA)",
+];
 
   const [fromInput, setFromInput] = useState("");
   const [toInput, setToInput] = useState("");

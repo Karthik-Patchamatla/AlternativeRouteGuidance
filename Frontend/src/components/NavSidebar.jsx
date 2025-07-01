@@ -123,7 +123,7 @@ export default function NavSidebar() {
             </div>
             {isTrainsOpen && (
               <div className="ml-8 mt-2 space-y-2 text-sm md:text-lg">
-                <Link to="/home/searchtrains">Search Trains</Link>
+                <Link to="/home/trains/searchtrains">Search Trains</Link>
               </div>
             )}
           </div>
