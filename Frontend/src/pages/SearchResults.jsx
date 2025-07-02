@@ -9,16 +9,18 @@ import { BASE_URL } from '../config';
 const TrainCard = ({ train }) => {
   const navigate = useNavigate();
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'available': return 'text-green-600 bg-green-50';
-      case 'tatkal': return 'text-orange-600 bg-orange-50';
-      case 'waiting': return 'text-red-600 bg-red-50';
-      default: return 'text-gray-600 bg-gray-50';
-    }
+  const isAvailable = (availability) => {
+    return parseInt(availability, 10) > 0;
   };
 
   const handleClassClick = (clsName, price, availability) => {
+    const availableCount = parseInt(availability, 10) || 0;
+
+    if (availableCount === 0) {
+      alert("No tickets left!");
+      return;
+    }
+
     navigate('/home/trains/searchtrains/searchresults/confirmtrain', {
       state: {
         train,
@@ -27,6 +29,39 @@ const TrainCard = ({ train }) => {
         availability
       }
     });
+  };
+
+  const renderClassCard = (label, price, availability) => {
+    const available = isAvailable(availability);
+
+    return (
+      <div
+        onClick={() => handleClassClick(label, price, availability)}
+        className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 transition-colors cursor-pointer"
+      >
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-medium text-gray-700">{label}</span>
+          <span className="text-lg font-semibold text-gray-900">₹{price}</span>
+        </div>
+        <div className="space-y-1">
+          <div className="flex items-center space-x-2">
+            <div
+              className={`w-2 h-2 rounded-full ${
+                available ? 'bg-green-500' : 'bg-red-500'
+              }`}
+            ></div>
+            <span className="text-xs font-medium">
+              AVL {availability}
+            </span>
+          </div>
+          <div className="text-xs">
+            <span className={available ? 'text-green-600' : 'text-red-600'}>
+              {available ? 'Available' : 'Not Available'}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -67,132 +102,10 @@ const TrainCard = ({ train }) => {
       {/* Class Options */}
       <div className="px-4 pb-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          
-          {/* 3A Class */}
-          <div
-            onClick={() => handleClassClick("3A", train["3A_price"], train["3A_availability"])}
-            className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">3A</span>
-              <span className="text-lg font-semibold text-gray-900">₹{train["3A_price"]}</span>
-            </div>
-            <div className="space-y-1">
-              <div className="flex items-center space-x-2">
-                <div className={`w-2 h-2 rounded-full ${
-                  train.availability?.['3A']?.status === 'waiting'
-                    ? 'bg-red-500'
-                    : train.availability?.['3A']?.status === 'tatkal'
-                    ? 'bg-orange-500'
-                    : 'bg-green-500'
-                }`}></div>
-                <span className="text-xs font-medium">
-                  {train.availability?.['3A']?.status === 'waiting' ? 'WL' : 'AVL'} {train["3A_availability"]}
-                </span>
-              </div>
-              <div className="text-xs">
-                {train.availability?.['3A']?.status === 'tatkal' && (
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor('tatkal')}`}>
-                    Tatkal
-                  </span>
-                )}
-                {train.availability?.['3A']?.status === 'waiting' && (
-                  <span className="text-red-600">Waiting List</span>
-                )}
-                {(!train.availability?.['3A']?.status || train.availability?.['3A']?.status === 'available') && (
-                  <span className="text-green-600">Available</span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Sleeper Class */}
-          <div
-            onClick={() => handleClassClick("Sleeper", train.sleeper_price, train.sleeper_availability)}
-            className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">SL</span>
-              <span className="text-lg font-semibold text-gray-900">₹{train.sleeper_price}</span>
-            </div>
-            <div className="space-y-1">
-              <div className="flex items-center space-x-2">
-                <div className={`w-2 h-2 rounded-full ${
-                  train.availability?.sleeper?.status === 'waiting'
-                    ? 'bg-red-500'
-                    : 'bg-green-500'
-                }`}></div>
-                <span className="text-xs font-medium">
-                  {train.availability?.sleeper?.status === 'waiting' ? 'WL' : 'AVL'} {train.sleeper_availability}
-                </span>
-              </div>
-              <div className="text-xs text-green-600">
-                {train.availability?.sleeper?.status === 'waiting' ? 'Waiting List' : 'Available'}
-              </div>
-            </div>
-          </div>
-
-          {/* 2A Class */}
-          <div
-            onClick={() => handleClassClick("2A", train["2A_price"], train["2A_availability"])}
-            className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">2A</span>
-              <span className="text-lg font-semibold text-gray-900">₹{train["2A_price"]}</span>
-            </div>
-            <div className="space-y-1">
-              <div className="flex items-center space-x-2">
-                <div className={`w-2 h-2 rounded-full ${
-                  train.availability?.['2A']?.status === 'waiting'
-                    ? 'bg-red-500'
-                    : 'bg-green-500'
-                }`}></div>
-                <span className="text-xs font-medium">
-                  {train.availability?.['2A']?.status === 'waiting' ? 'WL' : 'AVL'} {train["2A_availability"]}
-                </span>
-              </div>
-              <div className="text-xs text-green-600">
-                {train.availability?.['2A']?.status === 'waiting'
-                  ? 'Waiting List'
-                  : 'Available'}
-              </div>
-            </div>
-          </div>
-
-          {/* 1A Class */}
-          <div
-            onClick={() => handleClassClick("1A", train["1A_price"], train["1A_availability"])}
-            className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">1A</span>
-              <span className="text-lg font-semibold text-gray-900">₹{train["1A_price"]}</span>
-            </div>
-            <div className="space-y-1">
-              <div className="flex items-center space-x-2">
-                <div className={`w-2 h-2 rounded-full ${
-                  train.availability?.['1A']?.status === 'waiting'
-                    ? 'bg-red-500'
-                    : train.availability?.['1A']?.available < 10
-                    ? 'bg-yellow-500'
-                    : 'bg-green-500'
-                }`}></div>
-                <span className="text-xs font-medium">
-                  {train.availability?.['1A']?.status === 'waiting' ? 'WL' : 'AVL'} {train["1A_availability"]}
-                </span>
-              </div>
-              <div className="text-xs">
-                {train.availability?.['1A']?.status === 'waiting' ? (
-                  <span className="text-red-600">Waiting List</span>
-                ) : train.availability?.['1A']?.available < 10 ? (
-                  <span className="text-orange-600">Limited</span>
-                ) : (
-                  <span className="text-green-600">Available</span>
-                )}
-              </div>
-            </div>
-          </div>
+          {renderClassCard("3A", train["3A_price"], train["3A_availability"])}
+          {renderClassCard("Sleeper", train.sleeper_price, train.sleeper_availability)}
+          {renderClassCard("2A", train["2A_price"], train["2A_availability"])}
+          {renderClassCard("1A", train["1A_price"], train["1A_availability"])}
         </div>
       </div>
     </div>
@@ -206,21 +119,13 @@ export default function SearchResults() {
   const [error, setError] = useState(null);
 
   const searchTrains = async () => {
-    if (!trainDetails.from || !trainDetails.to) {
-      setError('Please provide both from and to locations');
-      return;
-    }
-
     setLoading(true);
     setError(null);
-
     try {
       const response = await axios.post(`${BASE_URL}/api/searchtrains`, {
         from: trainDetails.from,
         to: trainDetails.to,
       });
-
-      console.log("Train Search Response:", response.data);
       setSearchResults(response.data);
     } catch (err) {
       console.error('Search error:', err);
@@ -244,14 +149,17 @@ export default function SearchResults() {
   return (
     <div className="flex">
       <NavSidebar />
-
       <div className="flex-1 md:px-8 pt-16 lg:ml-72 lg:pt-20 min-h-screen">
         <div className="max-w-4xl mx-auto p-4">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Train Search Results</h1>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
+            <h1 className="text-2xl font-bold text-gray-900">
+              Train Search Results
+            </h1>
+            <div className="flex items-center space-x-2 text-sm text-gray-600 mt-2">
               <MapPin className="w-4 h-4" />
-              <span>{trainDetails.from} → {trainDetails.to}</span>
+              <span>
+                {trainDetails.from} → {trainDetails.to}
+              </span>
             </div>
           </div>
 
@@ -280,8 +188,12 @@ export default function SearchResults() {
             <div className="text-center py-12">
               <div className="text-gray-500">
                 <MapPin className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                <p className="text-lg">No trains found for the selected route.</p>
-                <p className="text-sm mt-2">Try searching for a different route or date.</p>
+                <p className="text-lg">
+                  No trains found for the selected route.
+                </p>
+                <p className="text-sm mt-2">
+                  Try searching for a different route or date.
+                </p>
               </div>
             </div>
           )}

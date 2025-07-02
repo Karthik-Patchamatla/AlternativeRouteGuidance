@@ -1,12 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  from: '',
-    to: '',
+  from: "",
+  to: "",
+  dateOfJourney: "",
 };
 
 const fromToSlice = createSlice({
-  name: 'fromto',
+  name: "fromto",
   initialState,
   reducers: {
     setTrainDetails: (state, action) => {

@@ -3,12 +3,15 @@ import { replace, useNavigate } from 'react-router-dom';
 import logo from '../assets/argimage.png';
 import axios from 'axios';
 import { BASE_URL } from '../config';
+import { useDispatch } from 'react-redux';
+import { setUserDetails } from '../redux/slices/AuthSlice.js';
 
 export default function Login() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const dispatch = useDispatch();
 
     // Handle input changes
     const handleChange = (e) => {
@@ -25,8 +28,8 @@ export default function Login() {
         e.preventDefault();
         try {
             const response = await axios.post(`${BASE_URL}/api/login`, { email, password });
-            console.log(response.data.message);
-
+            // console.log(response.data.user);
+            dispatch(setUserDetails(response.data.user));
             navigate('/home', { replace: true });
         } catch (error) {
             setErrorMessage(error.response?.data?.error || 'An error occurred during login');

@@ -7,44 +7,46 @@ import { useDispatch } from "react-redux";
 import { setTrainDetails } from "../redux/slices/FromToSlice.js";
 
 export default function SearchTrains() {
-const stationOptions = [
-  "Ahmedabad Junction (ADI)",
-  "Ambala Cantt (UMB)",
-  "Amritsar Junction (ASR)",
-  "Anand Vihar Terminal (ANVT)",
-  "Bengaluru City Junction (SBC)",
-  "Bhopal Junction (BPL)",
-  "Bhubaneswar (BBS)",
-  "Chandigarh (CDG)",
-  "Chennai Central (MAS)",
-  "Chhatrapati Shivaji Maharaj Terminus (CSMT)",
-  "Danapur (DNR)",
-  "Guwahati (GHY)",
-  "H Nizamuddin (NZM)",
-  "Hatia (HTE)",
-  "Howrah Junction (HWH)",
-  "Jaipur Junction (JP)",
-  "Jammu Tawi (JAT)",
-  "Jodhpur Junction (JU)",
-  "Kacheguda (KCG)",
-  "Kanpur Central (CNB)",
-  "Lokmanya Tilak Terminus (LTT)",
-  "Madgaon (MAO)",
-  "New Delhi (NDLS)",
-  "Patna Junction (PNBE)",
-  "Puri (PURI)",
-  "Raipur Junction (R)",
-  "Rajendra Nagar Terminal (RJPB)",
-  "Ranchi Junction (RNC)",
-  "Secunderabad Junction (SC)",
-  "Thiruvananthapuram Central (TVC)",
-  "Vijayawada Junction (BZA)",
-];
+  const stationOptions = [
+    "Ahmedabad Junction (ADI)",
+    "Ambala Cantt (UMB)",
+    "Amritsar Junction (ASR)",
+    "Anand Vihar Terminal (ANVT)",
+    "Bengaluru City Junction (SBC)",
+    "Bhopal Junction (BPL)",
+    "Bhubaneswar (BBS)",
+    "Chandigarh (CDG)",
+    "Chennai Central (MAS)",
+    "Chhatrapati Shivaji Maharaj Terminus (CSMT)",
+    "Danapur (DNR)",
+    "Guwahati (GHY)",
+    "H Nizamuddin (NZM)",
+    "Hatia (HTE)",
+    "Howrah Junction (HWH)",
+    "Jaipur Junction (JP)",
+    "Jammu Tawi (JAT)",
+    "Jodhpur Junction (JU)",
+    "Kacheguda (KCG)",
+    "Kanpur Central (CNB)",
+    "Lokmanya Tilak Terminus (LTT)",
+    "Madgaon (MAO)",
+    "New Delhi (NDLS)",
+    "Patna Junction (PNBE)",
+    "Puri (PURI)",
+    "Raipur Junction (R)",
+    "Rajendra Nagar Terminal (RJPB)",
+    "Ranchi Junction (RNC)",
+    "Secunderabad Junction (SC)",
+    "Thiruvananthapuram Central (TVC)",
+    "Vijayawada Junction (BZA)",
+  ];
 
   const [fromInput, setFromInput] = useState("");
   const [toInput, setToInput] = useState("");
+  const [dateInput, setDateInput] = useState("");
   const [fromSuggestions, setFromSuggestions] = useState([]);
   const [toSuggestions, setToSuggestions] = useState([]);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -80,8 +82,16 @@ const stationOptions = [
 
   const handleSearch = (e) => {
     e.preventDefault();
+    if(!fromInput || !toInput) {
+      alert("Please fill in all fields before searching.");
+      return;
+    }
     try {
-      dispatch(setTrainDetails({ from: fromInput, to: toInput }));
+      dispatch(setTrainDetails({ 
+        from: fromInput, 
+        to: toInput,
+        dateOfJourney: dateInput
+      }));
       navigate("/home/trains/searchtrains/searchresults");
     } catch (error) {
       console.error("Error with search:", error);
@@ -93,9 +103,11 @@ const stationOptions = [
       <NavSidebar />
       <div className="w-full pt-20 pl-4 pr-4 md:pl-72">
         <h1 className="text-2xl font-semibold mb-2">Advanced Train Search</h1>
-        <p className="text-sm mb-2">Dashboard/Trains/Search Trains</p>
+        <p className="text-sm mb-2">Dashboard / Trains / Search Trains</p>
         <hr className="mb-4" />
+
         <div className="flex flex-col md:flex-row md:space-x-2 md:px-40 justify-center mt-10 md:mt-28 space-y-4 md:space-y-0">
+
           {/* From Input */}
           <div className="border-2 rounded-md relative">
             <div className="bg-white h-20 w-full md:w-[300px] flex flex-col rounded-md pl-2 justify-center">
