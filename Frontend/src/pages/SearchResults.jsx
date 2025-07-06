@@ -8,6 +8,7 @@ import { BASE_URL } from "../config";
 
 const TrainCard = ({ train }) => {
   const navigate = useNavigate();
+  const user = useSelector((state) => state.auth);
 
   const isAvailable = (availability) => {
     return parseInt(availability, 10) > 0;
@@ -20,13 +21,13 @@ const TrainCard = ({ train }) => {
       alert("No tickets left!");
       return;
     }
-
     navigate("/home/trains/searchtrains/searchresults/confirmtrain", {
       state: {
         train,
         selectedClass: clsName,
         price,
         availability,
+        userEmail: user.email,
       },
     });
   };

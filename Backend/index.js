@@ -115,7 +115,6 @@ const trainSchema = new mongoose.Schema({
   "3A_availability": Number,
 });
 
-
 const Train = mongoose.model("Train", trainSchema);
 
 // Search Trains
@@ -163,6 +162,7 @@ const bookingSchema = new mongoose.Schema({
   number_of_tickets: Number,
   price_per_ticket: Number,
   total_price: Number,
+  email: String,
 });
 
 const Booking = mongoose.model("Booking", bookingSchema);
@@ -182,6 +182,7 @@ app.post("/api/bookings", async (req, res) => {
       number_of_tickets,
       price_per_ticket,
       total_price,
+      email,
     } = req.body;
 
     if (!train_id || !selected_class || !number_of_tickets) {
@@ -190,13 +191,12 @@ app.post("/api/bookings", async (req, res) => {
         .json({ error: "Missing required fields for booking." });
     }
 
-    // Find the train
     const train = await Train.findById(train_id);
     if (!train) {
       return res.status(404).json({ error: "Train not found." });
     }
 
-    // Map class names to correct availability fields
+    // Class mapping
     const classMap = {
       sleeper: "sleeper_availability",
       "1a": "1A_availability",
@@ -209,11 +209,10 @@ app.post("/api/bookings", async (req, res) => {
 
     if (!availabilityField) {
       return res.status(400).json({
-        error: `Class ${selected_class} not available for this train.`,
+        error: `Class '${selected_class}' not supported.`,
       });
     }
 
-    // Parse availability safely
     const currentAvailability = Number(train[availabilityField] || 0);
 
     if (currentAvailability < number_of_tickets) {
@@ -222,11 +221,9 @@ app.post("/api/bookings", async (req, res) => {
       });
     }
 
-    // Deduct seats
     train[availabilityField] = currentAvailability - number_of_tickets;
     await train.save();
 
-    // Save booking
     const newBooking = new Booking({
       train_id,
       train_number,
@@ -240,10 +237,7 @@ app.post("/api/bookings", async (req, res) => {
       number_of_tickets,
       price_per_ticket,
       total_price,
-      remaining_sleeper: train.sleeper_availability,
-      remaining_1A: train["1A_availability"],
-      remaining_2A: train["2A_availability"],
-      remaining_3A: train["3A_availability"],
+      email,
     });
 
     await newBooking.save();
@@ -260,6 +254,7 @@ app.post("/api/bookings", async (req, res) => {
   }
 });
 
+
 // Alternative Route Schema and Routes
 const alternativeRouteSchema = new mongoose.Schema({
   from: String,
@@ -273,7 +268,11 @@ const alternativeRouteSchema = new mongoose.Schema({
   combined_fare: Object,
 });
 
-const AlternativeRoute = mongoose.model("AlternativeRoute", alternativeRouteSchema, "alternativeroutes");
+const AlternativeRoute = mongoose.model(
+  "AlternativeRoute",
+  alternativeRouteSchema,
+  "alternativeroutes"
+);
 
 app.post("/api/alternativeroute", async (req, res) => {
   const { from, to } = req.body;
@@ -282,7 +281,7 @@ app.post("/api/alternativeroute", async (req, res) => {
   try {
     const result = await AlternativeRoute.findOne({
       from,
-      to
+      to,
     });
 
     if (!result) {
@@ -293,5 +292,163 @@ app.post("/api/alternativeroute", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error." });
+  }
+});
+
+/* -----------------------------
+   Alternative Booking Schema
+----------------------------- */
+
+const alternativeBookingSchema = new mongoose.Schema({
+  train_id: { type: mongoose.Schema.Types.ObjectId, ref: "AlternativeRoute" },
+  train_number_1: String,
+  train_name_1: String,
+  train_number_2: String,
+  train_name_2: String,
+  from: String,
+  to: String,
+  fromCode: String,
+  toCode: String,
+  intermediate_station: String,
+  start_time_1: String,
+  end_time_1: String,
+  start_time_2: String,
+  end_time_2: String,
+  duration_1: String,
+  duration_2: String,
+  wait_time: String,
+  total_duration: String,
+  selected_class: String,
+  number_of_tickets: Number,
+  price_per_ticket: Number,
+  total_price: Number,
+  email: String,
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const AlternativeBooking = mongoose.model(
+  "AlternativeBooking",
+  alternativeBookingSchema
+);
+
+/* -----------------------------
+   Alternative Booking Route
+----------------------------- */
+
+app.post("/api/alternativebookings", async (req, res) => {
+  try {
+    const {
+      train_id,
+      train_number_1,
+      train_name_1,
+      train_number_2,
+      train_name_2,
+      from,
+      to,
+      fromCode,
+      toCode,
+      intermediate_station,
+      start_time_1,
+      end_time_1,
+      start_time_2,
+      end_time_2,
+      duration_1,
+      duration_2,
+      wait_time,
+      total_duration,
+      selected_class,
+      number_of_tickets,
+      price_per_ticket,
+      total_price,
+      email,
+    } = req.body;
+
+    if (!train_id || !selected_class || !number_of_tickets || !email) {
+      return res
+        .status(400)
+        .json({ error: "Missing required booking fields." });
+    }
+
+    // Find the alternative route
+    const route = await AlternativeRoute.findById(train_id);
+    if (!route) {
+      return res.status(404).json({ error: "Alternative route not found." });
+    }
+
+    // Check availability
+    const availability = route.availability || {};
+    const classKeyMap = {
+      sleeper: "sleeper",
+      "1a": "firstClass",
+      "2a": "secondClass",
+      "3a": "thirdClass",
+    };
+    const key = classKeyMap[selected_class.toLowerCase()];
+
+    if (!key) {
+      return res.status(400).json({
+        error: `Class ${selected_class} is invalid.`,
+      });
+    }
+
+    const currentAvailability = Number(availability[key] || 0);
+
+    if (currentAvailability < number_of_tickets) {
+      return res.status(400).json({
+        error: `Only ${currentAvailability} seats left in ${selected_class}.`,
+      });
+    }
+
+    // Deduct seats via direct update
+    await AlternativeRoute.updateOne(
+      { _id: train_id },
+      {
+        $set: {
+          [`availability.${key}`]: currentAvailability - number_of_tickets,
+        },
+      }
+    );
+
+    // Save booking
+    const newBooking = new AlternativeBooking({
+      train_id,
+      train_number_1,
+      train_name_1,
+      train_number_2,
+      train_name_2,
+      from,
+      to,
+      fromCode,
+      toCode,
+      intermediate_station,
+      start_time_1,
+      end_time_1,
+      start_time_2,
+      end_time_2,
+      duration_1,
+      duration_2,
+      wait_time,
+      total_duration,
+      selected_class,
+      number_of_tickets,
+      price_per_ticket,
+      total_price,
+      email,
+    });
+
+    await newBooking.save();
+
+    res.status(201).json({
+      message: "Alternative booking successful.",
+      booking: newBooking,
+    });
+  } catch (error) {
+    console.error("Error saving alternative booking:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while saving alternative booking." });
   }
 });

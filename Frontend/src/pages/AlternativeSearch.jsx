@@ -3,13 +3,17 @@ import { useSelector } from "react-redux";
 import { Train, MapPin, Clock } from "lucide-react";
 import NavSidebar from "../components/NavSidebar";
 import axios from "axios";
-import { BASE_URL } from "../config"; // adjust your import if needed
+import { BASE_URL } from "../config";
+import { useNavigate } from "react-router-dom";
 
 const AlternativeSearch = () => {
   const trainDetails = useSelector((state) => state.fromto);
+  const user = useSelector((state) => state.auth);
   const [alternativeTrain, setAlternativeTrain] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAlternativeTrain = async () => {
@@ -39,11 +43,29 @@ const AlternativeSearch = () => {
     return parseInt(availability, 10) > 0;
   };
 
+  const handleClick = (label, price, availability) => {
+    if (!isAvailable(availability)) return;
+
+    navigate(
+      "/home/trains/searchtrains/searchresults/alternatives/confirmtrain",
+      {
+        state: {
+          train: alternativeTrain,
+          selectedClass: label,
+          price,
+          availability,
+          email: user.email,
+        },
+      }
+    );
+  };
+
   const renderClassCard = (label, price, availability) => {
     const available = isAvailable(availability);
 
     return (
       <div
+        onClick={() => handleClick(label, price, availability)}
         className={`border rounded-lg p-3 ${
           available
             ? "border-gray-200 hover:border-blue-300 cursor-pointer"
@@ -122,7 +144,7 @@ const AlternativeSearch = () => {
                 </div>
               </div>
 
-              {/* Middle journey info with curved dashed line */}
+              {/* Middle journey info */}
               <div className="flex flex-row items-center justify-between p-4 relative">
                 {/* Start Station */}
                 <div className="flex flex-col items-center mb-8 md:mb-0 md:w-24">

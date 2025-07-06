@@ -10,6 +10,7 @@ export default function ConfirmTrain() {
   const selectedClass = location.state?.selectedClass;
   const price = parseInt(location.state?.price, 10);
   const maxAvailability = parseInt(location.state?.availability, 10) || 0;
+  const email = location.state?.userEmail;
 
   const [ticketCount, setTicketCount] = useState(1);
   const totalPrice = ticketCount * price;
@@ -57,6 +58,7 @@ export default function ConfirmTrain() {
         number_of_tickets: ticketCount,
         price_per_ticket: price,
         total_price: totalPrice,
+        email: email,
       };
 
       const response = await axios.post(
@@ -110,6 +112,9 @@ export default function ConfirmTrain() {
         <p>
           <strong>Availability:</strong> {maxAvailability}
         </p>
+        <p>
+          <strong>User Email:</strong> {email}
+        </p>
 
         <div className="flex flex-col gap-4 mt-4">
           <div className="flex items-center space-x-4">
@@ -134,9 +139,7 @@ export default function ConfirmTrain() {
             </button>
           </div>
 
-          <p className="text-lg font-semibold">
-            Total Price: ₹{totalPrice}
-          </p>
+          <p className="text-lg font-semibold">Total Price: ₹{totalPrice}</p>
         </div>
       </div>
 
