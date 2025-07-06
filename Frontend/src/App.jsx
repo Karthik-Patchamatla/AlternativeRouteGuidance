@@ -11,23 +11,42 @@ import ChangePassword from "./pages/ChangePassword.jsx";
 import SearchTrains from "./pages/SearchTrains.jsx";
 import SearchResults from "./pages/SearchResults.jsx";
 import ConfirmTrain from "./pages/ConfirmTrain.jsx";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor } from "./redux/store/Store.js";
 
 export default function App() {
   return (
     <Provider store={store}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/home/profile/viewprofile" element={<ViewProfile />} />
-          <Route path="/home/profile/updateprofile" element={<UpdateProfile />} />
-          <Route path="/home/profile/changepassword" element={<ChangePassword />} />
-          <Route path="/home/trains/searchtrains" element={<SearchTrains />} />
-          <Route path="/home/trains/searchtrains/searchresults" element={<SearchResults />} />
-          <Route path="/home/trains/searchtrains/searchresults/confirmtrain" element={<ConfirmTrain />} />
-        </Routes>
-      </Router>
+      <PersistGate loading={null} persistor={persistor}>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/home/profile/viewprofile" element={<ViewProfile />} />
+            <Route
+              path="/home/profile/updateprofile"
+              element={<UpdateProfile />}
+            />
+            <Route
+              path="/home/profile/changepassword"
+              element={<ChangePassword />}
+            />
+            <Route
+              path="/home/trains/searchtrains"
+              element={<SearchTrains />}
+            />
+            <Route
+              path="/home/trains/searchtrains/searchresults"
+              element={<SearchResults />}
+            />
+            <Route
+              path="/home/trains/searchtrains/searchresults/confirmtrain"
+              element={<ConfirmTrain />}
+            />
+          </Routes>
+        </Router>
+      </PersistGate>
     </Provider>
   );
 }

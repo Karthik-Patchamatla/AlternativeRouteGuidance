@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import logo from "../assets/argimage.png";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { clearUserDetails } from "../redux/slices/AuthSlice";
+import { clearTrainDetails } from "../redux/slices/FromToSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function NavSidebar() {
   const user = useSelector((state) => state.auth);
@@ -20,6 +24,18 @@ export default function NavSidebar() {
     else if (hour >= 12 && hour < 17) return "Good Afternoon";
     else return "Good Evening";
   }
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(clearUserDetails());
+    dispatch(clearTrainDetails());
+
+    persistor.purge();
+
+    navigate("/");
+  };
 
   return (
     <div>
@@ -95,12 +111,19 @@ export default function NavSidebar() {
                 <i className="fa-solid fa-user"></i>
                 <span className="text-lg md:text-xl font-medium">Profile</span>
               </div>
-              <i className={`fa-solid ${isProfileOpen ? "fa-chevron-down" : "fa-chevron-right"}`}></i>
+              <i
+                className={`fa-solid ${
+                  isProfileOpen ? "fa-chevron-down" : "fa-chevron-right"
+                }`}
+              ></i>
             </div>
             {isProfileOpen && (
               <div className="ml-8 mt-2 space-y-2 text-sm md:text-lg">
                 <Link to="/home/profile/viewprofile">View Profile</Link> <br />
-                <Link to="/home/profile/updateprofile">Update Profile</Link> <br />
+                <Link to="/home/profile/updateprofile">
+                  Update Profile
+                </Link>{" "}
+                <br />
                 <Link to="/home/profile/changepassword">Change Password</Link>
               </div>
             )}
@@ -119,7 +142,11 @@ export default function NavSidebar() {
                 <i className="fa-solid fa-train"></i>
                 <span className="text-lg md:text-xl font-medium">Trains</span>
               </div>
-              <i className={`fa-solid ${isTrainsOpen ? "fa-chevron-down" : "fa-chevron-right"}`}></i>
+              <i
+                className={`fa-solid ${
+                  isTrainsOpen ? "fa-chevron-down" : "fa-chevron-right"
+                }`}
+              ></i>
             </div>
             {isTrainsOpen && (
               <div className="ml-8 mt-2 space-y-2 text-sm md:text-lg">
@@ -162,12 +189,19 @@ export default function NavSidebar() {
                 <i className="fa-solid fa-user"></i>
                 <span>Profile</span>
               </div>
-              <i className={`fa-solid ${isProfileOpen ? "fa-chevron-down" : "fa-chevron-right"}`}></i>
+              <i
+                className={`fa-solid ${
+                  isProfileOpen ? "fa-chevron-down" : "fa-chevron-right"
+                }`}
+              ></i>
             </div>
             {isProfileOpen && (
               <div className="pl-6 mt-2 space-y-1 text-sm text-gray-700">
                 <Link to="/home/profile/viewprofile">View Profile</Link> <br />
-                <Link to="/home/profile/updateprofile">Update Profile</Link> <br />
+                <Link to="/home/profile/updateprofile">
+                  Update Profile
+                </Link>{" "}
+                <br />
                 <Link to="/home/profile/changepassword">Change Password</Link>
               </div>
             )}
@@ -185,7 +219,11 @@ export default function NavSidebar() {
                 <i className="fa-solid fa-train"></i>
                 <span>Trains</span>
               </div>
-              <i className={`fa-solid ${isTrainsOpen ? "fa-chevron-down" : "fa-chevron-right"}`}></i>
+              <i
+                className={`fa-solid ${
+                  isTrainsOpen ? "fa-chevron-down" : "fa-chevron-right"
+                }`}
+              ></i>
             </div>
             {isTrainsOpen && (
               <div className="pl-6 mt-2 space-y-1 text-sm text-gray-700">
@@ -199,9 +237,12 @@ export default function NavSidebar() {
             <Link to="/home/tickets">Tickets</Link>
           </div>
 
-          <div className="mb-4 flex items-center space-x-2">
+          <div
+            className="mb-4 flex items-center space-x-2 cursor-pointer"
+            onClick={handleLogout}
+          >
             <i className="fa-solid fa-right-from-bracket"></i>
-            <Link to="/">Logout</Link>
+            <span>Logout</span>
           </div>
         </div>
       </div>
