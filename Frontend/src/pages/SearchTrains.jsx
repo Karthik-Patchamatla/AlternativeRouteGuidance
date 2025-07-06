@@ -43,7 +43,6 @@ export default function SearchTrains() {
 
   const [fromInput, setFromInput] = useState("");
   const [toInput, setToInput] = useState("");
-  const [dateInput, setDateInput] = useState("");
   const [fromSuggestions, setFromSuggestions] = useState([]);
   const [toSuggestions, setToSuggestions] = useState([]);
 
@@ -90,7 +89,6 @@ export default function SearchTrains() {
       dispatch(setTrainDetails({ 
         from: fromInput, 
         to: toInput,
-        dateOfJourney: dateInput
       }));
       navigate("/home/trains/searchtrains/searchresults");
     } catch (error) {

@@ -68,7 +68,11 @@ export default function ConfirmTrain() {
       navigate("/home");
     } catch (error) {
       console.error(error);
-      alert("Booking failed. Please try again.");
+      if (error.response?.data?.error) {
+        alert(`Booking failed: ${error.response.data.error}`);
+      } else {
+        alert("Booking failed. Please try again.");
+      }
     }
   };
 
@@ -107,31 +111,33 @@ export default function ConfirmTrain() {
           <strong>Availability:</strong> {maxAvailability}
         </p>
 
-        <div className="flex items-center mt-4 space-x-4">
-          <span className="font-medium">Number of Tickets:</span>
-          <button
-            onClick={handleDecrement}
-            className="w-8 h-8 bg-gray-200 rounded hover:bg-gray-300"
-          >
-            -
-          </button>
-          <span className="w-8 text-center">{ticketCount}</span>
-          <button
-            onClick={handleIncrement}
-            className={`w-8 h-8 rounded ${
-              ticketCount < maxAvailability
-                ? "bg-gray-200 hover:bg-gray-300"
-                : "bg-gray-100 cursor-not-allowed"
-            }`}
-            disabled={ticketCount >= maxAvailability}
-          >
-            +
-          </button>
-        </div>
+        <div className="flex flex-col gap-4 mt-4">
+          <div className="flex items-center space-x-4">
+            <span className="font-medium">Number of Tickets:</span>
+            <button
+              onClick={handleDecrement}
+              className="w-8 h-8 bg-gray-200 rounded hover:bg-gray-300"
+            >
+              -
+            </button>
+            <span className="w-8 text-center">{ticketCount}</span>
+            <button
+              onClick={handleIncrement}
+              className={`w-8 h-8 rounded ${
+                ticketCount < maxAvailability
+                  ? "bg-gray-200 hover:bg-gray-300"
+                  : "bg-gray-100 cursor-not-allowed"
+              }`}
+              disabled={ticketCount >= maxAvailability}
+            >
+              +
+            </button>
+          </div>
 
-        <p className="mt-4 text-lg font-semibold">
-          Total Price: ₹{totalPrice}
-        </p>
+          <p className="text-lg font-semibold">
+            Total Price: ₹{totalPrice}
+          </p>
+        </div>
       </div>
 
       <button

@@ -1,0 +1,55 @@
+[
+  {
+    "from": "Howrah Junction (HWH)",
+    "fromCode": "HWH",
+    "toCode": "SC",
+    "intermediatecode": "BZA",
+    "to": "Secunderabad Junction (SC)",
+    "intermediate_stop": "Vijayawada Junction (BZA)",
+
+    "train_1": {
+      "train_number": "12863",
+      "train_name": "HWH SMVB Express",
+      "start_time": "14:25",
+      "end_time": "05:30",
+      "duration": "15h 5m",
+      "from": "Howrah Junction (HWH)",
+      "to": "Vijayawada Junction (BZA)",
+      "sleeper_price": 580,
+      "1A_price": 3680,
+      "2A_price": 2180,
+      "3A_price": 1530
+    },
+
+    "train_2": {
+      "train_number": "12739",
+      "train_name": "VSKP SC Garib Rath",
+      "start_time": "10:30",
+      "end_time": "16:15",
+      "duration": "5h 45m",
+      "from": "Vijayawada Junction (BZA)",
+      "to": "Secunderabad Junction (SC)",
+      "sleeper_price": 280,
+      "1A_price": 0,
+      "2A_price": 870,
+      "3A_price": 630
+    },
+
+    "wait_time": "5h 0m",
+    "total_duration": "25h 50m",
+
+    "availability": {
+      "sleeper": 3,
+      "firstClass": 3,
+      "secondClass": 3,
+      "thirdClass": 3
+    },
+
+    "combined_fare": {
+      "sleeper": 860,
+      "firstClass": 3680,
+      "secondClass": 3050,
+      "thirdClass": 2160
+    }
+  }
+]

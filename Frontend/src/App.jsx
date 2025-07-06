@@ -13,6 +13,7 @@ import SearchResults from "./pages/SearchResults.jsx";
 import ConfirmTrain from "./pages/ConfirmTrain.jsx";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor } from "./redux/store/Store.js";
+import AlternativeSearch from "./pages/AlternativeSearch.jsx";
 
 export default function App() {
   return (
@@ -43,6 +44,11 @@ export default function App() {
             <Route
               path="/home/trains/searchtrains/searchresults/confirmtrain"
               element={<ConfirmTrain />}
+            />
+
+            <Route
+              path="/home/trains/searchtrains/searchresults/alternatives"
+              element={<AlternativeSearch />}
             />
           </Routes>
         </Router>

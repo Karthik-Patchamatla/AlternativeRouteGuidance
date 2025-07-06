@@ -105,15 +105,16 @@ const trainSchema = new mongoose.Schema({
   start_time: String,
   arrival_time: String,
   duration: String,
-  sleeper_price: String,
-  "1A_price": String,
-  "2A_price": String,
-  "3A_price": String,
-  "1A_availability": String,
-  "2A_availability": String,
-  "3A_availability": String,
-  "sleeper_availability": String,
+  sleeper_price: Number,
+  "1A_price": Number,
+  "2A_price": Number,
+  "3A_price": Number,
+  sleeper_availability: Number,
+  "1A_availability": Number,
+  "2A_availability": Number,
+  "3A_availability": Number,
 });
+
 
 const Train = mongoose.model("Train", trainSchema);
 
@@ -158,7 +159,6 @@ const bookingSchema = new mongoose.Schema({
   start_time: String,
   arrival_time: String,
   duration: String,
-  date_of_journey: String,
   selected_class: String,
   number_of_tickets: Number,
   price_per_ticket: Number,
@@ -167,7 +167,6 @@ const bookingSchema = new mongoose.Schema({
 
 const Booking = mongoose.model("Booking", bookingSchema);
 
-// Create Booking
 app.post("/api/bookings", async (req, res) => {
   try {
     const {
@@ -179,13 +178,55 @@ app.post("/api/bookings", async (req, res) => {
       start_time,
       arrival_time,
       duration,
-      date_of_journey,
       selected_class,
       number_of_tickets,
       price_per_ticket,
       total_price,
     } = req.body;
 
+    if (!train_id || !selected_class || !number_of_tickets) {
+      return res
+        .status(400)
+        .json({ error: "Missing required fields for booking." });
+    }
+
+    // Find the train
+    const train = await Train.findById(train_id);
+    if (!train) {
+      return res.status(404).json({ error: "Train not found." });
+    }
+
+    // Map class names to correct availability fields
+    const classMap = {
+      sleeper: "sleeper_availability",
+      "1a": "1A_availability",
+      "2a": "2A_availability",
+      "3a": "3A_availability",
+    };
+
+    const classKey = selected_class.toLowerCase();
+    const availabilityField = classMap[classKey];
+
+    if (!availabilityField) {
+      return res.status(400).json({
+        error: `Class ${selected_class} not available for this train.`,
+      });
+    }
+
+    // Parse availability safely
+    const currentAvailability = Number(train[availabilityField] || 0);
+
+    if (currentAvailability < number_of_tickets) {
+      return res.status(400).json({
+        error: `Only ${currentAvailability} tickets left in ${selected_class}.`,
+      });
+    }
+
+    // Deduct seats
+    train[availabilityField] = currentAvailability - number_of_tickets;
+    await train.save();
+
+    // Save booking
     const newBooking = new Booking({
       train_id,
       train_number,
@@ -195,20 +236,62 @@ app.post("/api/bookings", async (req, res) => {
       start_time,
       arrival_time,
       duration,
-      date_of_journey,
       selected_class,
       number_of_tickets,
       price_per_ticket,
       total_price,
+      remaining_sleeper: train.sleeper_availability,
+      remaining_1A: train["1A_availability"],
+      remaining_2A: train["2A_availability"],
+      remaining_3A: train["3A_availability"],
     });
 
     await newBooking.save();
 
-    res.status(201).json({ message: "Booking saved successfully" });
+    res.status(201).json({
+      message: "Booking saved successfully.",
+      booking: newBooking,
+    });
   } catch (error) {
     console.error("Error saving booking:", error);
     res
       .status(500)
       .json({ error: "An error occurred while saving booking data." });
+  }
+});
+
+// Alternative Route Schema and Routes
+const alternativeRouteSchema = new mongoose.Schema({
+  from: String,
+  to: String,
+  intermediate_stop: String,
+  train_1: Object,
+  train_2: Object,
+  availability: Object,
+  wait_time: String,
+  total_duration: String,
+  combined_fare: Object,
+});
+
+const AlternativeRoute = mongoose.model("AlternativeRoute", alternativeRouteSchema, "alternativeroutes");
+
+app.post("/api/alternativeroute", async (req, res) => {
+  const { from, to } = req.body;
+  console.log("Received request for alternative route:", { from, to });
+
+  try {
+    const result = await AlternativeRoute.findOne({
+      from,
+      to
+    });
+
+    if (!result) {
+      return res.status(404).json({ message: "No alternative route found." });
+    }
+
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error." });
   }
 });
