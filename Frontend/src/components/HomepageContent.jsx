@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Train, XOctagon, Ticket} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const stations = [
   { name: "Ahmedabad Junction", code: "ADI", state: "Gujarat" },
@@ -40,19 +41,20 @@ const stations = [
 ];
 
 export default function HomepageContent() {
+  const navigate = useNavigate();
   return (
     <div className="flex-1 lg:ml-64 px-4 pt-20 md:px-12 md:pt-24 pb-10">
       {/* Your 3 Tiles */}
       <div className="w-full flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="flex flex-1 items-center justify-between gap-3 rounded-lg p-6 bg-blue-100 hover:bg-blue-200 transition-colors cursor-pointer">
+        <div onClick={() => navigate("/home/bookedtrain")} className="flex flex-1 items-center justify-between gap-3 rounded-lg p-6 bg-blue-100 hover:bg-blue-200 transition-colors cursor-pointer">
           <Train className="w-6 h-6 text-blue-600" />
           <p className="text-blue-800 text-lg font-semibold">Booked Train</p>
         </div>
-        <div className="flex flex-1 items-center justify-between gap-3 rounded-lg p-6 bg-red-100 hover:bg-red-200 transition-colors cursor-pointer">
+        <div onClick={() => navigate("/home/canceltrain")} className="flex flex-1 items-center justify-between gap-3 rounded-lg p-6 bg-red-100 hover:bg-red-200 transition-colors cursor-pointer">
           <XOctagon className="w-6 h-6 text-red-600" />
           <p className="text-red-800 text-lg font-semibold">Cancel Train</p>
         </div>
-        <div className="flex flex-1 items-center justify-between gap-3 rounded-lg p-6 bg-green-100 hover:bg-green-200 transition-colors cursor-pointer">
+        <div onClick={() => navigate("/home/tickets")} className="flex flex-1 items-center justify-between gap-3 rounded-lg p-6 bg-green-100 hover:bg-green-200 transition-colors cursor-pointer">
           <Ticket className="w-6 h-6 text-green-600" />
           <p className="text-green-800 text-lg font-semibold">Tickets</p>
         </div>

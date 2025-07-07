@@ -93,6 +93,90 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+// Update Profile
+app.post("/api/updateprofile", async (req, res) => {
+  try {
+    const { email, firstName, lastName, username, mobileNumber, birthday, address } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ error: "Email is required for profile update." });
+    }
+
+    const updatedUser = await Register.findOneAndUpdate(
+      { email: email },
+      {
+        firstname: firstName,
+        lastname: lastName,
+        username: username,
+        mobilenumber: mobileNumber,
+        Birthday: birthday,
+        Address: address,
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        firstName: updatedUser.firstname,
+        lastName: updatedUser.lastname,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        mobileNumber: updatedUser.mobilenumber,
+        birthday: updatedUser.Birthday,
+        address: updatedUser.Address,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ error: "An error occurred while updating profile." });
+  }
+});
+
+// Update Password
+app.post("/api/updatepassword", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ error: "Email is required for profile password." });
+    }
+
+    const updatedUser = await Register.findOneAndUpdate(
+      { email: email },
+      {
+        password: password,
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        firstName: updatedUser.firstname,
+        lastName: updatedUser.lastname,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        mobileNumber: updatedUser.mobilenumber,
+        birthday: updatedUser.Birthday,
+        address: updatedUser.Address,
+        password: updatedUser.password,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ error: "An error occurred while updating password." });
+  }
+});
+
 /* -----------------------------
      Train Schema and Routes
 ----------------------------- */
@@ -450,5 +534,112 @@ app.post("/api/alternativebookings", async (req, res) => {
     res
       .status(500)
       .json({ error: "An error occurred while saving alternative booking." });
+  }
+});
+
+// Booked Train
+app.post('/api/bookedtrain', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const [bookings, alternativeBookings] = await Promise.all([
+      Booking.find({ email }),
+      AlternativeBooking.find({ email })
+    ]);
+
+    res.json({
+      bookings,
+      alternativeBookings
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Cancel Regular Train
+app.delete("/api/bookings/:id", async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+
+    // Find booking first
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found." });
+    }
+
+    const train = await Train.findById(booking.train_id);
+    if (!train) {
+      return res.status(404).json({ error: "Associated train not found." });
+    }
+
+    const classMap = {
+      sleeper: "sleeper_availability",
+      "1a": "1A_availability",
+      "2a": "2A_availability",
+      "3a": "3A_availability",
+    };
+
+    const classKey = booking.selected_class.toLowerCase();
+    const availabilityField = classMap[classKey];
+
+    if (!availabilityField) {
+      return res.status(400).json({ error: "Invalid class in booking." });
+    }
+
+    train[availabilityField] += booking.number_of_tickets;
+    await train.save();
+
+    await Booking.findByIdAndDelete(bookingId);
+
+    res.json({ message: "Booking cancelled successfully." });
+  } catch (error) {
+    console.error("Error cancelling booking:", error);
+    res.status(500).json({ error: "Server error while cancelling booking." });
+  }
+});
+
+// Cancel Alternative Train
+
+app.delete("/api/alternativebookings/:id", async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+
+    const booking = await AlternativeBooking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ error: "Alternative booking not found." });
+    }
+
+    const route = await AlternativeRoute.findById(booking.train_id);
+    if (!route) {
+      return res.status(404).json({ error: "Associated alternative route not found." });
+    }
+
+    const classKeyMap = {
+      sleeper: "sleeper",
+      "1a": "firstClass",
+      "2a": "secondClass",
+      "3a": "thirdClass",
+    };
+
+    const key = classKeyMap[booking.selected_class.toLowerCase()];
+
+    if (!key) {
+      return res.status(400).json({ error: "Invalid class in alternative booking." });
+    }
+
+    const availability = route.availability || {};
+    availability[key] = (availability[key] || 0) + booking.number_of_tickets;
+
+    await AlternativeRoute.findByIdAndUpdate(booking.train_id, {
+      $set: { availability }
+    });
+
+    await AlternativeBooking.findByIdAndDelete(bookingId);
+
+    res.json({ message: "Alternative booking cancelled successfully." });
+  } catch (error) {
+    console.error("Error cancelling alternative booking:", error);
+    res.status(500).json({ error: "Server error while cancelling alternative booking." });
   }
 });

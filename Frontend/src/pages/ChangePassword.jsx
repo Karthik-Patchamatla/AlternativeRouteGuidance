@@ -1,7 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import NavSidebar from '../components/NavSidebar';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import { BASE_URL } from '../config';
+import { setUserDetails } from '../redux/slices/AuthSlice.js';
+import { useNavigate } from 'react-router-dom';
 
 export default function ChangePassword() {
+  const user = useSelector((state) => state.auth)
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [profileData, setProfileData] = useState({
+      oldPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProfileData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if(profileData.oldPassword!=user.password) {
+      alert("password unmatched"); 
+      retrun;
+    }
+
+    try {
+      const updatedData = {
+        email: user.email,
+        password: profileData.newPassword
+      };
+
+      const res = await axios.post(
+        `${BASE_URL}/api/updatepassword`,
+        updatedData
+      );
+
+      alert("Password updated successfully!");
+      // console.log(res.data.user);
+      dispatch(setUserDetails(res.data.user))
+      navigate("/home");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-50 pt-0 lg:pt-20">
       
@@ -13,7 +61,7 @@ export default function ChangePassword() {
           <p className="text-sm text-gray-500 mb-4">Update your account password</p>
           <hr className="mb-6" />
 
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="grid gap-6">
 
               <div>
@@ -24,6 +72,8 @@ export default function ChangePassword() {
                   type="password"
                   id="oldPassword"
                   name="oldPassword"
+                  value={profileData.oldPassword}
+                  onChange={handleChange}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
@@ -37,6 +87,8 @@ export default function ChangePassword() {
                   type="password"
                   id="newPassword"
                   name="newPassword"
+                  value={profileData.newPassword}
+                  onChange={handleChange}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
@@ -50,6 +102,8 @@ export default function ChangePassword() {
                   type="password"
                   id="confirmPassword"
                   name="confirmPassword"
+                  value={profileData.confirmPassword}
+                  onChange={handleChange}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />

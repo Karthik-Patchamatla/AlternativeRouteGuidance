@@ -1,9 +1,14 @@
 import NavSidebar from '../components/NavSidebar';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { BASE_URL } from '../config';
+import { useDispatch } from 'react-redux';
+import { setUserDetails } from '../redux/slices/AuthSlice.js';
 
 export default function UpdateProfile() {
   const user = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [profileData, setProfileData] = useState({
     firstname: '',
     lastname: '',
@@ -35,9 +40,33 @@ export default function UpdateProfile() {
       [name]: value
     }));
   };
-
+  
   const handleSubmit = async (e) => {
-    
+    e.preventDefault();
+
+    try {
+      const updatedData = {
+        firstname: profileData.firstname,
+        lastname: profileData.lastname,
+        username: profileData.username,
+        email: profileData.email,
+        mobilenumber: profileData.mobilenumber,
+        birthday: profileData.birthday,
+        address: profileData.address,
+      };
+
+      const res = await axios.post(
+        `${BASE_URL}/api/updateprofile`,
+        updatedData
+      );
+
+      alert("Profile updated successfully!");
+      // console.log(res.data.user);
+      dispatch(setUserDetails(res.data.user))
+      navigate("/home/profile/viewprofile");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
